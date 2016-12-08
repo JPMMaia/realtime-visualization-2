@@ -34,4 +34,14 @@
       <Filter>CUDAEngine</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="CUDAEngine\KDE2D.cuh">
+      <Filter>CUDAEngine</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="CUDAEngine\KDE2D.cu">
+      <Filter>CUDAEngine</Filter>
+    </CudaCompile>
+  </ItemGroup>
 </Project>

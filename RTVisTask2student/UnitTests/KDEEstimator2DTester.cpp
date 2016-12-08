@@ -2,7 +2,9 @@
 #include "CppUnitTest.h"
 #include "DataReader.h"
 #include "Utilities.h"
+#include "KDE2D.cuh"
 
+#include <stdio.h>
 #include <vector>
 #include <algorithm>
 
@@ -46,6 +48,9 @@ namespace UnitTests
 			auto epsilonLocal = epsilon * std::max<float>(rangeDep / float(numBins - 1), rangeArr / float(numBins - 1));
 
 			auto maxBin = KDEEstimator2D(departureDelays.data(), arrivalDelays.data(), departureDelays.size(), epsilonLocal, minDep, maxDep, minArr, maxArr, image.data(), numBins);
+
+			CallKDE2D();
+			
 		}
 
 	};
