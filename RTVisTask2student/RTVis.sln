@@ -5,16 +5,40 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RTVis", "RTVis.vcxproj", "{95D446AE-20B1-43AC-B066-415877F97F49}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "UnitTests\UnitTests.vcxproj", "{0F7F9CE1-2A3E-4F75-91CE-CED82EC7A8B3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CUDAEngine", "CUDAEngine\CUDAEngine.vcxproj", "{3F550DC4-815A-43BA-BE11-1126BF0386F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{95D446AE-20B1-43AC-B066-415877F97F49}.Debug|x64.ActiveCfg = Debug|x64
 		{95D446AE-20B1-43AC-B066-415877F97F49}.Debug|x64.Build.0 = Debug|x64
+		{95D446AE-20B1-43AC-B066-415877F97F49}.Debug|x86.ActiveCfg = Debug|x64
 		{95D446AE-20B1-43AC-B066-415877F97F49}.Release|x64.ActiveCfg = Release|x64
 		{95D446AE-20B1-43AC-B066-415877F97F49}.Release|x64.Build.0 = Release|x64
+		{95D446AE-20B1-43AC-B066-415877F97F49}.Release|x86.ActiveCfg = Release|x64
+		{0F7F9CE1-2A3E-4F75-91CE-CED82EC7A8B3}.Debug|x64.ActiveCfg = Debug|x64
+		{0F7F9CE1-2A3E-4F75-91CE-CED82EC7A8B3}.Debug|x64.Build.0 = Debug|x64
+		{0F7F9CE1-2A3E-4F75-91CE-CED82EC7A8B3}.Debug|x86.ActiveCfg = Debug|Win32
+		{0F7F9CE1-2A3E-4F75-91CE-CED82EC7A8B3}.Debug|x86.Build.0 = Debug|Win32
+		{0F7F9CE1-2A3E-4F75-91CE-CED82EC7A8B3}.Release|x64.ActiveCfg = Release|x64
+		{0F7F9CE1-2A3E-4F75-91CE-CED82EC7A8B3}.Release|x64.Build.0 = Release|x64
+		{0F7F9CE1-2A3E-4F75-91CE-CED82EC7A8B3}.Release|x86.ActiveCfg = Release|Win32
+		{0F7F9CE1-2A3E-4F75-91CE-CED82EC7A8B3}.Release|x86.Build.0 = Release|Win32
+		{3F550DC4-815A-43BA-BE11-1126BF0386F2}.Debug|x64.ActiveCfg = Debug|x64
+		{3F550DC4-815A-43BA-BE11-1126BF0386F2}.Debug|x64.Build.0 = Debug|x64
+		{3F550DC4-815A-43BA-BE11-1126BF0386F2}.Debug|x86.ActiveCfg = Debug|Win32
+		{3F550DC4-815A-43BA-BE11-1126BF0386F2}.Debug|x86.Build.0 = Debug|Win32
+		{3F550DC4-815A-43BA-BE11-1126BF0386F2}.Release|x64.ActiveCfg = Release|x64
+		{3F550DC4-815A-43BA-BE11-1126BF0386F2}.Release|x64.Build.0 = Release|x64
+		{3F550DC4-815A-43BA-BE11-1126BF0386F2}.Release|x86.ActiveCfg = Release|Win32
+		{3F550DC4-815A-43BA-BE11-1126BF0386F2}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

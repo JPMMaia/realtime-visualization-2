@@ -158,6 +158,11 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">lib\qt\bin\uic.exe -o generated\ui_%(Filename).h %(FullPath)</Command>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="CUDAEngine\CUDAEngine.vcxproj">
+      <Project>{3f550dc4-815a-43ba-be11-1126bf0386f2}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

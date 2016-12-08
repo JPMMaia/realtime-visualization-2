@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="CUDAEngine">
+      <UniqueIdentifier>{cca14299-4d8f-49dc-ba43-43336a398a79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CUDAEngine\Utilities">
+      <UniqueIdentifier>{67e1fdc1-16f9-4659-bc20-18b36a3d97f3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CUDAEngine\Utilities.cpp">
+      <Filter>CUDAEngine\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="CUDAEngine\EngineException.cpp">
+      <Filter>CUDAEngine\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="CUDAEngine\DataReader.cpp">
+      <Filter>CUDAEngine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CUDAEngine\EngineException.h">
+      <Filter>CUDAEngine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="CUDAEngine\Utilities.h">
+      <Filter>CUDAEngine\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="CUDAEngine\DataReader.h">
+      <Filter>CUDAEngine</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
