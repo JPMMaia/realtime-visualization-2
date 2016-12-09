@@ -1,38 +1,73 @@
 #include <stdio.h>
 #include <cuda_runtime.h>
 #include <cmath>
+#include <algorithm>
 
-__global__
-void saxpy(int n, float a, float *x, float *y)
+__device__
+float CudaIsotropicGaussKernel2D(float x, float y, float center_x, float center_y, float eps)
 {
-	int i = blockIdx.x*blockDim.x + threadIdx.x;
-	if (i < n) y[i] = a*x[i] + y[i];
+	register float tmpx = x - center_x;
+	register float tmpy = y - center_y;
+	register float eps_p_2 = eps*eps;
+
+	return ::expf(-0.5f * tmpx * tmpx / eps_p_2) * ::expf(-0.5f * tmpy * tmpy / eps_p_2);
 }
 
-void CallKDE2D()
+__global__
+void CudaKDE2D(const float* xData, const float* yData, size_t dataCount, float epsilon, float minX, float maxX, float minY, float maxY, float* kdeImage, size_t numBins)
 {
-	int N = 1 << 20;
-	float *x, *y, *d_x, *d_y;
-	x = (float*)malloc(N * sizeof(float));
-	y = (float*)malloc(N * sizeof(float));
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if (id >= static_cast<int>(numBins * numBins))
+		return;
 
-	cudaMalloc(&d_x, N * sizeof(float));
-	cudaMalloc(&d_y, N * sizeof(float));
+	int i = id / numBins;
+	int j = id % numBins;
 
-	for (int i = 0; i < N; i++) {
-		x[i] = 1.0f;
-		y[i] = 2.0f;
+	float rangeX = maxX - minX;
+	float rangeY = maxY - minY;
+	float y = float(i) / (numBins - 1)*rangeY + minY;
+	float x = float(j) / (numBins - 1)*rangeX + minX;
+
+	float sum = 0.0f;
+	for (int dataIndex = 0; dataIndex < dataCount; dataIndex++)
+	{
+		sum += CudaIsotropicGaussKernel2D(x, y, xData[dataIndex], yData[dataIndex], epsilon);
 	}
+	kdeImage[id] = sum;
+}
 
-	cudaMemcpy(d_x, x, N * sizeof(float), cudaMemcpyHostToDevice);
-	cudaMemcpy(d_y, y, N * sizeof(float), cudaMemcpyHostToDevice);
+float CallKDE2D(const float* xData, const float* yData, size_t dataCount, float epsilon, float minX, float maxX, float minY, float maxY, float* kdeImage, size_t numBins)
+{
+	size_t dataByteSize = dataCount * sizeof(float);
+	size_t imageByteSize = numBins * numBins * sizeof(float);
 
-	// Perform SAXPY on 1M elements
-	saxpy <<<(N + 255) / 256, 256 >>>(N, 2.0f, d_x, d_y);
+	// Initialize GPU memory for the x-data:
+	float* cudaXData;
+	cudaMalloc(&cudaXData, dataByteSize);
+	cudaMemcpy(cudaXData, xData, dataByteSize, cudaMemcpyHostToDevice);
 
-	cudaMemcpy(y, d_y, N * sizeof(float), cudaMemcpyDeviceToHost);
+	// Initialize GPU memory for the y-data:
+	float* cudaYData;
+	cudaMalloc(&cudaYData, dataByteSize);
+	cudaMemcpy(cudaYData, yData, dataByteSize, cudaMemcpyHostToDevice);
 
-	float maxError = 0.0f;
-	for (int i = 0; i < N; i++)
-		maxError = std::fmax(maxError, abs(y[i] - 4.0f));
+	// Initialize GPU memory for KDE image with values 0:
+	float* cudaKDEImage;
+	cudaMalloc(&cudaKDEImage, imageByteSize);
+	cudaMemset(cudaKDEImage, 0, imageByteSize);
+
+	// Call kde 2d:
+	int threadsPerBlock = 256;
+	int blocksPerGrid = (numBins*numBins + threadsPerBlock - 1) / threadsPerBlock;
+	CudaKDE2D << <blocksPerGrid, threadsPerBlock >> > (cudaXData, cudaYData, dataCount, epsilon, minX, maxX, minY, maxY, cudaKDEImage, numBins);
+
+	// Copy memory of the KDE image from GPU to CPU:
+	cudaMemcpy(kdeImage, cudaKDEImage, imageByteSize, cudaMemcpyDeviceToHost);
+
+	// Free memory on GPU:
+	cudaFree(cudaKDEImage);
+	cudaFree(cudaYData);
+	cudaFree(cudaXData);
+
+	return *std::max_element(kdeImage, kdeImage + (numBins*numBins));
 }

@@ -1,15 +1,16 @@
 #include "Streamserver.h"
 #include "QtWebSockets/qwebsocketserver.h"
 #include "QtWebSockets/qwebsocket.h"
-#include <QtCore/QDebug>
-#include <QFileInfo>
 #include "mainwindow.h"
+#include "CUDAEngine/KDE2D.cuh"
 
 #include <QSslConfiguration>
 #include <QSslCertificate>
 #include <QSslKey>
 #include <math.h>
 #include <iostream>
+#include <QtCore/QDebug>
+#include <QFileInfo>
 
 
 QT_USE_NAMESPACE
@@ -138,7 +139,8 @@ void StreamServer::createKDE() {
 	QElapsedTimer timer;
 	timer.start();
 
-	maxBin = KDEEstimator2D(depart.data(), arr.data(), depart.size(), epsilon_local, minDep, maxDep, minArr, maxArr, kde_image.data(), numBins);
+	//maxBin = KDEEstimator2D(depart.data(), arr.data(), depart.size(), epsilon_local, minDep, maxDep, minArr, maxArr, kde_image.data(), numBins);
+	maxBin = CallKDE2D(depart.data(), arr.data(), depart.size(), epsilon_local, minDep, maxDep, minArr, maxArr, kde_image.data(), numBins);
 
 	qDebug("kde in %d msec", timer.elapsed());
 }

@@ -52,13 +52,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src;generated;lib;lib\glew\include;lib\qt\include;lib\qt\include\QtCLucene;lib\qt\include\QtCore;lib\qt\include\QtGui;lib\qt\include\QtOpenGL;lib\qt\include\QtOpenGLExtensions;lib\qt\include\QtPlatformSupport;lib\qt\include\QtUiTools;lib\qt\include\QtWidgets;lib\qt\include\QtZlib;lib\qt\include\QtNetwork;lib\qt\include\QtXml;lib\glm;lib\glsw;lib\netCDF 4.4.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;generated;lib;lib\glew\include;lib\qt\include;lib\qt\include\QtCLucene;lib\qt\include\QtCore;lib\qt\include\QtGui;lib\qt\include\QtOpenGL;lib\qt\include\QtOpenGLExtensions;lib\qt\include\QtPlatformSupport;lib\qt\include\QtUiTools;lib\qt\include\QtWidgets;lib\qt\include\QtZlib;lib\qt\include\QtNetwork;lib\qt\include\QtXml;lib\glm;lib\glsw;lib\netCDF 4.4.1\include;$(SolutionDir)CUDAEngine;$(CUDA_INC_PATH)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>lib\glew\lib;lib\qt\lib;lib\netCDF 4.4.1\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32d.lib;opengl32.lib;glu32.lib;Qt5CLucened.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5OpenGLd.lib;Qt5OpenGLExtensionsd.lib;Qt5PlatformSupportd.lib;Qt5UiToolsd.lib;Qt5Widgetsd.lib;Qt5Networkd.lib;Qt5WebSocketsd.lib;qtmaind.lib;Qt5Xmld.lib;netcdf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>lib\glew\lib;lib\qt\lib;lib\netCDF 4.4.1\lib;$(CUDA_LIB_PATH)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32d.lib;opengl32.lib;glu32.lib;Qt5CLucened.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5OpenGLd.lib;Qt5OpenGLExtensionsd.lib;Qt5PlatformSupportd.lib;Qt5UiToolsd.lib;Qt5Widgetsd.lib;Qt5Networkd.lib;Qt5WebSocketsd.lib;qtmaind.lib;Qt5Xmld.lib;netcdf.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
@@ -71,15 +71,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>src;generated;lib;lib\glew\include;lib\qt\include;lib\qt\include\QtCLucene;lib\qt\include\QtCore;lib\qt\include\QtGui;lib\qt\include\QtOpenGL;lib\qt\include\QtOpenGLExtensions;lib\qt\include\QtPlatformSupport;lib\qt\include\QtUiTools;lib\qt\include\QtWidgets;lib\qt\include\QtZlib;lib\qt\include\QtNetwork;lib\qt\include\QtXml;lib\glm;lib\glsw;lib\netCDF 4.4.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;generated;lib;lib\glew\include;lib\qt\include;lib\qt\include\QtCLucene;lib\qt\include\QtCore;lib\qt\include\QtGui;lib\qt\include\QtOpenGL;lib\qt\include\QtOpenGLExtensions;lib\qt\include\QtPlatformSupport;lib\qt\include\QtUiTools;lib\qt\include\QtWidgets;lib\qt\include\QtZlib;lib\qt\include\QtNetwork;lib\qt\include\QtXml;lib\glm;lib\glsw;lib\netCDF 4.4.1\include;$(SolutionDir)CUDAEngine;$(CUDA_INC_PATH)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>lib\glew\lib;lib\qt\lib;lib\netCDF 4.4.1\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;glu32.lib;Qt5CLucene.lib;Qt5Core.lib;Qt5Gui.lib;Qt5OpenGL.lib;Qt5OpenGLExtensions.lib;Qt5PlatformSupport.lib;Qt5UiTools.lib;Qt5Widgets.lib;qtmain.lib;Qt5Xml.lib;netcdf.lib;Qt5Network.lib;Qt5WebSockets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>lib\glew\lib;lib\qt\lib;lib\netCDF 4.4.1\lib;$(CUDA_LIB_PATH)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;glu32.lib;Qt5CLucene.lib;Qt5Core.lib;Qt5Gui.lib;Qt5OpenGL.lib;Qt5OpenGLExtensions.lib;Qt5PlatformSupport.lib;Qt5UiTools.lib;Qt5Widgets.lib;qtmain.lib;Qt5Xml.lib;netcdf.lib;Qt5Network.lib;Qt5WebSockets.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
