@@ -22,6 +22,9 @@
     <ClCompile Include="CUDAEngine\DataReader.cpp">
       <Filter>CUDAEngine</Filter>
     </ClCompile>
+    <ClCompile Include="CUDAEngine\Timer.cpp">
+      <Filter>CUDAEngine\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CUDAEngine\EngineException.h">
@@ -32,6 +35,9 @@
     </ClInclude>
     <ClInclude Include="CUDAEngine\DataReader.h">
       <Filter>CUDAEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="CUDAEngine\Timer.h">
+      <Filter>CUDAEngine\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

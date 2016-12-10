@@ -18,6 +18,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include "CUDAEngine/DataReader.h"
 
 
 std::vector<float> MainWindow::departureDelays;
@@ -63,41 +64,8 @@ void MainWindow::openFileAction()
 	bool success = false;
 	if (!filename.isEmpty())
 	{
-
-		std::ifstream in((std::string) filename.toStdString(), std::ifstream::binary | std::ios::ate);
-		if (in) {
-			// get length of file:
-		//	in.seekg(0, in.end);
-			int length = in.tellg();
-
-			in.clear();
-			in.seekg(0, std::ios::beg);
-
-		
-
-			int oneArraySize = (length / sizeof(int)) / 2; //byte to int32
-			MainWindow::departureDelays.reserve(oneArraySize);
-			MainWindow::arrivalDelays.reserve(oneArraySize);
-			int upto = 500; //in order to reduce data set (otherwise it takes a long time).
-			int count = 0;
-			while (!in.eof() && count <upto) {
-				int tmp;
-				in.read((char*)&tmp, sizeof(int));
-				if(!in.eof()){ //reading to end of file, possibly eofbit isn't set at the loop end.
-				MainWindow::departureDelays.push_back(tmp);}
-
-				
-				in.read((char*)&tmp, sizeof(int));
-				if (!in.eof()) {
-					MainWindow::arrivalDelays.push_back(tmp);
-				}	
-				count += 1;
-			}
-
-			success = true;
-
-		}
-		in.close();
+		CUDAEngine::DataReader::Read(filename.toStdWString(), MainWindow::departureDelays, MainWindow::arrivalDelays, 200000);
+		success = true;
 	}
 
 	// status message

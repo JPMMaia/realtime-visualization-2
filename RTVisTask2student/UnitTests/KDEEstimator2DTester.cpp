@@ -4,6 +4,7 @@
 #include "Utilities.h"
 #include "KDE2D.cuh"
 
+#include <windows.h>
 #include <stdio.h>
 #include <vector>
 #include <algorithm>
@@ -34,7 +35,7 @@ namespace UnitTests
 			// Read data:
 			vector<float> departureDelays;
 			vector<float> arrivalDelays;
-			DataReader::Read(L"../../Data/smalldata.data", departureDelays, arrivalDelays, 500);
+			DataReader::Read(L"../../Data/smalldata.data", departureDelays, arrivalDelays, 2000);
 
 			auto rangeX = maxX - minX;
 			auto rangeY = maxY - minY;

@@ -3,6 +3,8 @@
 #include <cmath>
 #include <algorithm>
 
+constexpr auto c_blockSize = 256;
+
 __device__
 float CudaIsotropicGaussKernel2D(float x, float y, float center_x, float center_y, float eps)
 {
@@ -16,8 +18,9 @@ float CudaIsotropicGaussKernel2D(float x, float y, float center_x, float center_
 __global__
 void CudaKDE2D(const float* xData, const float* yData, size_t dataCount, float epsilon, float minX, float maxX, float minY, float maxY, float* kdeImage, size_t numBins)
 {
+	int imageSize = static_cast<int>(numBins * numBins);
 	int id = blockDim.x * blockIdx.x + threadIdx.x;
-	if (id >= static_cast<int>(numBins * numBins))
+	if (id >= imageSize)
 		return;
 
 	int i = id / numBins;
@@ -29,10 +32,39 @@ void CudaKDE2D(const float* xData, const float* yData, size_t dataCount, float e
 	float x = float(j) / (numBins - 1)*rangeX + minX;
 
 	float sum = 0.0f;
-	for (int dataIndex = 0; dataIndex < dataCount; dataIndex++)
+
+	// Version 1:
+	/*{
+		for (int dataIndex = 0; dataIndex < dataCount; dataIndex++)
+		{
+			sum += CudaIsotropicGaussKernel2D(x, y, xData[dataIndex], yData[dataIndex], epsilon);
+		}
+	}*/
+
+	// Version 2:
 	{
-		sum += CudaIsotropicGaussKernel2D(x, y, xData[dataIndex], yData[dataIndex], epsilon);
+		__shared__ float xDataShared[c_blockSize];
+		__shared__ float yDataShared[c_blockSize];
+
+		for (int blockStart = 0; blockStart < dataCount; blockStart += c_blockSize)
+		{
+			for (int index = 0; index < c_blockSize && (blockStart + index) < dataCount; ++index)
+			{
+				xDataShared[index] = xData[blockStart + index];
+				yDataShared[index] = yData[blockStart + index];
+			}
+
+			__syncthreads();
+
+			for (int index = 0; index < c_blockSize && (blockStart + index) < dataCount; ++index)
+			{
+				sum += CudaIsotropicGaussKernel2D(x, y, xDataShared[index], yDataShared[index], epsilon);
+			}
+
+			__syncthreads();
+		}
 	}
+
 	kdeImage[id] = sum;
 }
 
@@ -57,9 +89,9 @@ float CallKDE2D(const float* xData, const float* yData, size_t dataCount, float 
 	cudaMemset(cudaKDEImage, 0, imageByteSize);
 
 	// Call kde 2d:
-	int threadsPerBlock = 256;
-	int blocksPerGrid = (numBins*numBins + threadsPerBlock - 1) / threadsPerBlock;
-	CudaKDE2D << <blocksPerGrid, threadsPerBlock >> > (cudaXData, cudaYData, dataCount, epsilon, minX, maxX, minY, maxY, cudaKDEImage, numBins);
+	int blockDimension = c_blockSize;
+	int gridDimension = static_cast<int>((numBins*numBins + blockDimension - 1) / blockDimension);
+	CudaKDE2D << <gridDimension, blockDimension >> > (cudaXData, cudaYData, dataCount, epsilon, minX, maxX, minY, maxY, cudaKDEImage, numBins);
 
 	// Copy memory of the KDE image from GPU to CPU:
 	cudaMemcpy(kdeImage, cudaKDEImage, imageByteSize, cudaMemcpyDeviceToHost);
