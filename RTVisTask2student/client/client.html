@@ -12,6 +12,9 @@
 <script src="http://d3js.org/d3.v2.js"></script>
 <script src="three.min.js"></script>
 
+<!-- Javascript includes -->
+<script src="Application.js" type="text/javascript"></script>
+<script src="main.js" type="text/javascript"></script>
 
 <script language="javascript" type="text/javascript">
     var margin = { top: 20, right: 20, bottom: 30, left: 40 },
@@ -169,10 +172,28 @@
         websock.onopen = websocket.open;
         websock.onclose = websocket.close;
         websock.onmessage = websocket.message;
-        websock.onerror = websocket.error
+        websock.onerror = websocket.error;
+        
+        initializeApplication(websock);
     }
 
     window.addEventListener("load", init, false);
     //add listeners to create interaction, e.g. mousemove etc.
 
 </script>
+
+<section id="controls-section">
+    
+    <section>
+        <button id="zoom_in" type="button">+</button>
+        <button id="zoom_out" type="button">-</button>
+    </section>
+    
+    <section>
+        <button id="pan_left" type="button">Left</button>
+        <button id="pan_right" type="button">Right</button>
+        <button id="pan_up" type="button">Up</button>
+        <button id="pan_down" type="button">Down</button>
+    </section>
+    
+</section>
