@@ -101,6 +101,24 @@ Graphics.prototype.initializeRenderer = function(application)
 
 	// Append renderer to DOM:
 	document.body.appendChild(this.renderer.domElement);
+	
+	this.initializeShaders();
+};
+Graphics.prototype.initializeShaders = function()
+{
+	var vertexShader = document.getElementById("VertexShader").text;
+	var fragmentShader = document.getElementById("FragmentShader").text;
+	
+	this.uniforms = {};
+	
+	var context = this;
+	this.shaderMaterial = new THREE.ShaderMaterial(
+		{
+			uniforms: context.uniforms,
+			vertexShader: vertexShader,
+			fragmentShader: fragmentShader
+		}
+	);
 };
 Graphics.prototype.initializeScene = function (application, textureData)
 {	 
@@ -117,7 +135,9 @@ Graphics.prototype.initializeScene = function (application, textureData)
 	var geometry = new THREE.PlaneGeometry(application.getWindowWidth(), application.getWindowHeight(), 1, 1);
 
 	// Basic material with histogram data texture: 
-	var material = new THREE.MeshBasicMaterial( {wireframe: false, map: dataTexture } );
+	//var material = new THREE.MeshBasicMaterial( {wireframe: false, map: dataTexture } );
+	var material = this.shaderMaterial;
+	this.uniforms.u_texture = {type: "t", value: dataTexture };
 
 	// Mesh:
 	var mesh = new THREE.Mesh(geometry, material);

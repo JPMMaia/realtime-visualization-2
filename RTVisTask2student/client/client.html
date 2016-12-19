@@ -22,6 +22,32 @@
 
 <link rel="stylesheet" href="clientStylesheet.css">
 
+<!-- Shaders -->
+<script id="VertexShader" type="shader">
+varying vec2 vs_uv;
+
+void main() 
+{
+    vs_uv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+</script>
+<script id="FragmentShader" type="shader">
+precision highp float;
+
+uniform float color;
+uniform sampler2D u_texture;
+
+varying vec2 vs_uv;
+
+void main() 
+{
+    vec3 diffuseColor = texture2D(u_texture, vs_uv).rgb;
+
+    gl_FragColor = vec4(diffuseColor, 1.0);
+}
+</script>
+
 <section id="controls-section">
     
     <section>
