@@ -1,23 +1,32 @@
 var g_application;
 
+var g_zoomScalar = 0.1;
+var g_panScalar = 1.0;
+
 function onZoomInButtonClick()
 {	
+	g_application.zoom(1.0 - g_zoomScalar);
 }
 function onZoomOutButtonClick()
 {	
+	g_application.zoom(1.0 + g_zoomScalar);
 }
 
 function onPanLeftButtonClick()
 {	
+	g_application.pan(-g_panScalar, 0.0);
 }
 function onPanRightButtonClick()
 {	
+	g_application.pan(g_panScalar, 0.0);
 }
 function onPanUpButtonClick()
 {	
+	g_application.pan(0.0, g_panScalar);
 }
 function onPanDownButtonClick()
 {	
+	g_application.pan(0.0, -g_panScalar);
 }
 
 function setupUI()
@@ -43,7 +52,7 @@ function setupUI()
 
 function run()
 {
-	g_application.render();
+	g_application.update();
 
     setTimeout(
         function()
@@ -54,10 +63,11 @@ function run()
     );
 }
 
-function initializeApplication(websocket) 
+function initializeApplication() 
 {
-	g_application = new Application(websocket);
+	g_application = new Application(run);
 	
 	setupUI();
-	run();
 }
+
+window.addEventListener("load", initializeApplication, false);

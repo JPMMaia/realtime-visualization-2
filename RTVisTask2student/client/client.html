@@ -13,8 +13,12 @@
 <script src="three.min.js"></script>
 
 <!-- Javascript includes -->
+<script src="ApplicationSocket.js" type="text/javascript"></script>
+<script src="Graphics.js" type="text/javascript"></script>
 <script src="Application.js" type="text/javascript"></script>
 <script src="main.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="clientStylesheet.css">
 
 <script language="javascript" type="text/javascript">
     var margin = { top: 20, right: 20, bottom: 30, left: 40 },
@@ -31,154 +35,6 @@
     var geometry, mesh;
     var TFUniforms;
     var texData; 
-
-    var wsUri = "ws://localhost:8001",
-        websock = new WebSocket(wsUri);
-
-    var websocket = {
-        open: function (evt) {
-            console.log("req_image");
-            websock.send("KDE " + minX + " " + maxX + " " + minY + " " + maxY);
-            websock.send("req_image");
-        },
-        close: function (evt) {
-            setTimeout(function () { window.location.href = 'client.html'; }, 3000);
-            document.write('Socket disconnected. Restarting..');
-        },
-        message: function (evt) {
-
-            var l = evt.data.byteLength;
-            var dataview = new DataView(evt.data);
-            var resolution = dataview.getInt32(l - 8, true);
-            var maxBin = dataview.getInt32(l - 4, true);
-
-            console.log(" l " + l);
-            console.log("max " + dataview.getInt32(l - 4, true));
-            console.log("res " + dataview.getInt32(l - 8, true));
-                
-            texData = new Float32Array(evt.data.slice(0, l - 8));
-            
-
-            var x = d3.scale.linear()
-                .domain([minX, maxX])
-                .range([0, width]);
-
-            var y = d3.scale.linear()
-                .domain([minY, maxY])
-                .range([height, 0]);
-
-            // svg container for axes
-            var svg = d3.select("body").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            // d3 axes
-            var xAxis = d3.svg.axis()
-                .scale(x)
-                .orient("bottom");
-
-            var yAxis = d3.svg.axis()
-                .scale(y)
-                .orient("left");
-
-            svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
-                .attr("fill", "#888")
-                .call(xAxis)
-                .append("text")
-                .attr("class", "label")
-                .attr("x", width)
-                .attr("y", -6)
-                .style("text-anchor", "end")
-                .text("departure delay (mins)");
-
-            svg.append("g")
-                .attr("class", "y axis")
-                .attr("fill", "#888")
-                .call(yAxis)
-                .append("text")
-                .attr("class", "label")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", ".71em")
-                .style("text-anchor", "end")
-                .text("arrival delay (mins)");
-
-            // var texData;
-                
-            var texSize = texData.length;
-            var texWidth = Math.sqrt(texSize);
-
-
-
-            // histogram data texture
-            dataTexture = new THREE.DataTexture(texData, texWidth, texWidth, THREE.LuminanceFormat, THREE.FloatType);
-            dataTexture.wrapS = THREE.ClampToEdgeWrapping;
-            dataTexture.wrapT = THREE.ClampToEdgeWrapping;
-            dataTexture.repeat.set(1, 1);
-            dataTexture.needsUpdate = true;
-
-            // ortho camera
-            camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 1, 1000);
-            camera.position.z = 1000;
-
-            // quad geometry
-            geometry = new THREE.PlaneGeometry(width, height, 1, 1);
-
-            // basic material with histogram data texture 
-            material = new THREE.MeshBasicMaterial( {wireframe: false, map: dataTexture } );
-
-            // mesh
-            mesh = new THREE.Mesh(geometry, material);
-
-            // scene
-            scene = new THREE.Scene();
-            scene.add(mesh);
-
-            // renderer
-            renderer = new THREE.WebGLRenderer();
-            renderer.setSize(width, height);
-
-            // renderer placement
-            renderer.domElement.style.position = "absolute";
-            renderer.domElement.style.top = (margin.top) + "px";
-            renderer.domElement.style.left = (margin.left) + "px";
-            renderer.domElement.style.zIndex = "1";
-
-            // append renderer to DOM
-            document.body.appendChild(renderer.domElement);
-
-
-            // render once
-            renderer.render(scene, camera);
-
-
-        },
-        error: function (evt) {
-            console.log('error', evt);
-        }
-    };
-
-
-
-
-
-    function init() {
-        websock.binaryType = "arraybuffer";
-
-        websock.onopen = websocket.open;
-        websock.onclose = websocket.close;
-        websock.onmessage = websocket.message;
-        websock.onerror = websocket.error;
-        
-        initializeApplication(websock);
-    }
-
-    window.addEventListener("load", init, false);
-    //add listeners to create interaction, e.g. mousemove etc.
 
 </script>
 
