@@ -7,8 +7,8 @@ function Application(onSocketConnected)
 	};
 	
 	this.windowMargin = { top: 20, right: 20, bottom: 30, left: 40 };
-	this.windowWidth = 500 - margin.left - margin.right;
-	this.windowHeight = 500 - margin.top - margin.bottom;
+	this.windowWidth = 500 - this.windowMargin.left - this.windowMargin.right;
+	this.windowHeight = 500 - this.windowMargin.top - this.windowMargin.bottom;
 	
 	this.centerX = 200.0;
 	this.centerY = 200.0;
