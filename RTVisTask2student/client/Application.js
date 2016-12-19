@@ -38,6 +38,7 @@ Application.prototype.update = function()
 Application.prototype.render = function(textureData)
 {
 	this.graphics.initializeScene(textureData);
+	this.graphics.updateAxis(this);
 	this.graphics.render();
 };
 
@@ -49,8 +50,8 @@ Application.prototype.zoom = function(value)
 };
 Application.prototype.pan = function(x, y)
 {	
-	this.centerX -= x;
-	this.centerY -= y;
+	this.centerX += this.dataRangeWidth * 0.05 * x;
+	this.centerY += this.dataRangeWidth * 0.05 * y;
 	this.dataParametersDirty = true;
 };
 

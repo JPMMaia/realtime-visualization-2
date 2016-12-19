@@ -18,6 +18,20 @@ Graphics.prototype.initializeAxis = function (application)
 	var margin = application.getWindowMargin();
 	var width = application.getWindowWidth();
 	var height = application.getWindowHeight(); 
+
+	// SVG container for axes:
+	this.axisSVG = d3.select("body").append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		
+	this.updateAxis(application);
+};
+Graphics.prototype.updateAxis = function(application)
+{
+	var width = application.getWindowWidth();
+	var height = application.getWindowHeight(); 
 	var minX = application.getMinX();
 	var maxX = application.getMaxX();
 	var minY = application.getMinY();
@@ -31,13 +45,6 @@ Graphics.prototype.initializeAxis = function (application)
 		.domain([minY, maxY])
 		.range([height, 0]);
 
-	// SVG container for axes:
-	this.axisSVG = d3.select("body").append("svg")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
-		.append("g")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 	// d3 axes
 	var xAxis = d3.svg.axis()
 		.scale(x)
@@ -47,6 +54,7 @@ Graphics.prototype.initializeAxis = function (application)
 		.scale(y)
 		.orient("left");
 
+	this.axisSVG.selectAll("*").remove();
 	this.axisSVG.append("g")
 		.attr("class", "x axis")
 		.attr("transform", "translate(0," + height + ")")
@@ -71,6 +79,7 @@ Graphics.prototype.initializeAxis = function (application)
 		.style("text-anchor", "end")
 		.text("arrival delay (mins)");
 };
+
 Graphics.prototype.initializeRenderer = function(application)
 {
 	var margin = application.getWindowMargin();

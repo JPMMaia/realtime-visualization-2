@@ -1,11 +1,4 @@
 function ApplicationSocket(application, uri) {
-
-    var dataTexture;
-    var material;
-    var scene, camera, renderer;
-    var geometry, mesh;
-    var TFUniforms;
-    var texData;
 	
 	this.webSocket = new WebSocket(uri);
 	var webSocketFunctions = {
