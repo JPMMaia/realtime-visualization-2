@@ -38,9 +38,9 @@ Application.prototype.update = function()
 		this.applicationSocket.requestImage();
 	}
 };
-Application.prototype.render = function(textureData)
+Application.prototype.render = function(textureData, maxValue)
 {
-	this.graphics.initializeScene(this, textureData);
+	this.graphics.initializeScene(this, textureData, maxValue);
 	this.graphics.updateAxis(this);
 	this.graphics.render();
 };

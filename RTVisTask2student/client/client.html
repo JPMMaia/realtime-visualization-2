@@ -37,14 +37,16 @@ precision highp float;
 
 uniform float color;
 uniform sampler2D u_texture;
+uniform float u_maxValue;
 
 varying vec2 vs_uv;
 
 void main() 
 {
-    vec3 diffuseColor = texture2D(u_texture, vs_uv).rgb;
+    float kdeValue = texture2D(u_texture, vs_uv).r;
+    kdeValue /= u_maxValue;
 
-    gl_FragColor = vec4(diffuseColor, 1.0);
+    gl_FragColor = vec4(kdeValue, kdeValue, kdeValue, 1.0);
 }
 </script>
 

@@ -120,7 +120,7 @@ Graphics.prototype.initializeShaders = function()
 		}
 	);
 };
-Graphics.prototype.initializeScene = function (application, textureData)
+Graphics.prototype.initializeScene = function (application, textureData, maxValue)
 {	 
 	// Histogram data texture:
 	var textureSize = textureData.length;
@@ -137,7 +137,8 @@ Graphics.prototype.initializeScene = function (application, textureData)
 	// Basic material with histogram data texture: 
 	//var material = new THREE.MeshBasicMaterial( {wireframe: false, map: dataTexture } );
 	var material = this.shaderMaterial;
-	this.uniforms.u_texture = {type: "t", value: dataTexture };
+	this.uniforms.u_texture = { type: "t", value: dataTexture };
+	this.uniforms.u_maxValue = { type: "f", value: maxValue };
 
 	// Mesh:
 	var mesh = new THREE.Mesh(geometry, material);

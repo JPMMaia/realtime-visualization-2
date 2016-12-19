@@ -20,7 +20,7 @@ function ApplicationSocket(application, uri) {
 			console.log("res " + dataview.getInt32(dataLength - 8, true));
 			
 			var texureData = new Float32Array(evt.data.slice(0, dataLength - 8));
-			application.render(texureData);
+			application.render(texureData, maxBin);
 			
 		},
 		error: function (evt) {
