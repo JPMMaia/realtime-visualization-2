@@ -50,6 +50,39 @@ function setupUI()
 	panDownButton.onclick = onPanDownButtonClick;
 }
 
+function setupInput()
+{
+	window.onkeydown = function(keyboardEvent)
+    {
+        g_application.getKeyboard().onKeyDown(keyboardEvent.keyCode);
+    };
+    window.onkeyup = function(keyboardEvent)
+    {
+        g_application.getKeyboard().onKeyUp(keyboardEvent.keyCode);
+    };
+
+	var canvas = g_application.getRendererCanvas();
+    canvas.onmousedown = function(mouseEvent)
+    {
+        g_application.getMouse().onButtonDown(mouseEvent.button);
+    };
+    canvas.onmouseup = function(mouseEvent)
+    {
+        g_application.getMouse().onButtonUp(mouseEvent.button);
+    };
+    canvas.onmousemove = function(mouseEvent)
+    {
+		var mouse = g_application.getMouse();
+		if(mouse.isButtonDown(0))
+			g_application.pan(mouseEvent.movementX * 0.04, mouseEvent.movementY * 0.04);
+    };
+    canvas.onwheel = function(wheelEvent)
+    {
+		var zoomValue = wheelEvent.wheelDelta > 0 ? 0.9 : 1.1;
+        g_application.zoom(zoomValue);
+    };
+}
+
 function run()
 {
 	g_application.update();
@@ -68,6 +101,7 @@ function initializeApplication()
 	g_application = new Application(run);
 	
 	setupUI();
+	setupInput();
 }
 
 window.addEventListener("load", initializeApplication, false);

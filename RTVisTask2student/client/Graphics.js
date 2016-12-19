@@ -134,3 +134,8 @@ Graphics.prototype.initializeScene = function (textureData)
 	
 	this.scene.add(mesh);
 };
+
+Graphics.prototype.getRendererCanvas = function()
+{
+	return this.renderer.domElement;	
+};

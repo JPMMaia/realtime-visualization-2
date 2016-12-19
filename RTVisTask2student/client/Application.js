@@ -17,6 +17,9 @@ function Application(onSocketConnected)
 	this.dataParametersDirty = true;
 	this.graphics = new Graphics(this);
 	
+	this.keyboard = new Keyboard();
+	this.mouse = new Mouse();
+	
 	this.dataDirty = true; 
 }
 
@@ -91,4 +94,17 @@ Application.prototype.getWindowWidth = function()
 Application.prototype.getWindowHeight = function()
 {
 	return this.windowHeight;
+};
+
+Application.prototype.getKeyboard = function()
+{
+	return this.keyboard;	
+};
+Application.prototype.getMouse = function() 
+{
+	return this.mouse;
+};
+Application.prototype.getRendererCanvas = function() 
+{
+	return this.graphics.getRendererCanvas();	
 };
