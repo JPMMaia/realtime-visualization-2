@@ -1,9 +1,5 @@
 function Graphics(application) 
-{
-	this.margin = { top: 20, right: 20, bottom: 30, left: 40 };
-    this.width = 500 - margin.left - margin.right;
-    this.height = 500 - margin.top - margin.bottom;
-	
+{	
 	this.initializeAxis(application);
 	this.initializeRenderer(application);
 }
@@ -106,8 +102,8 @@ Graphics.prototype.initializeRenderer = function(application)
 	// Append renderer to DOM:
 	document.body.appendChild(this.renderer.domElement);
 };
-Graphics.prototype.initializeScene = function (textureData)
-{	
+Graphics.prototype.initializeScene = function (application, textureData)
+{	 
 	// Histogram data texture:
 	var textureSize = textureData.length;
     var textureWidth = Math.sqrt(textureSize);
@@ -118,7 +114,7 @@ Graphics.prototype.initializeScene = function (textureData)
 	dataTexture.needsUpdate = true;
 	
 	// Quad geometry:
-	var geometry = new THREE.PlaneGeometry(this.width, this.height, 1, 1);
+	var geometry = new THREE.PlaneGeometry(application.getWindowWidth(), application.getWindowHeight(), 1, 1);
 
 	// Basic material with histogram data texture: 
 	var material = new THREE.MeshBasicMaterial( {wireframe: false, map: dataTexture } );

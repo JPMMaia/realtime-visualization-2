@@ -40,7 +40,7 @@ Application.prototype.update = function()
 };
 Application.prototype.render = function(textureData)
 {
-	this.graphics.initializeScene(textureData);
+	this.graphics.initializeScene(this, textureData);
 	this.graphics.updateAxis(this);
 	this.graphics.render();
 };
