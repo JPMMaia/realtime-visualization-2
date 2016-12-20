@@ -41,12 +41,184 @@ uniform float u_maxValue;
 
 varying vec2 vs_uv;
 
+vec3 RGBToXYZ(vec3 rgb)
+{
+    vec3 rgbn = rgb / 255.0;  
+
+    rgbn.r = rgbn.r > 0.04045 ? pow((rgbn.r + 0.055) / 1.055, 2.4) : rgbn.r / 12.92;
+    rgbn.g = rgbn.g > 0.04045 ? pow((rgbn.g + 0.055) / 1.055, 2.4) : rgbn.g / 12.92;
+    rgbn.b = rgbn.b > 0.04045 ? pow((rgbn.b + 0.055) / 1.055, 2.4) : rgbn.b / 12.92; 
+
+    mat3 RGBToXYZMatrix = mat3(
+        vec3(0.4124, 0.3576, 0.1805), // First column
+        vec3(0.2126, 0.7152, 0.0722), // Second column
+        vec3(0.0193, 0.1192, 0.9505) // Third column
+        );
+        
+    return rgbn * RGBToXYZMatrix * 100.0;
+}
+float XYZToCIELABAuxiliaryFunction(float x)
+{
+    float epsilon = 6.0 / 29.0;
+    if(x > epsilon*epsilon*epsilon)
+        return exp(log(x)/3.0);
+    else
+        return x / (3.0 * epsilon*epsilon) + 4.0 / 29.0; 
+}
+vec3 XYZToCIELAB(vec3 xyz)
+{
+    vec3 whiteReference = vec3(95.047, 100.000, 108.883);
+
+    float l = 116.0 * XYZToCIELABAuxiliaryFunction(xyz.y / whiteReference.y) - 16.0;
+    float a = 500.0 * (XYZToCIELABAuxiliaryFunction(xyz.x / whiteReference.x) - XYZToCIELABAuxiliaryFunction(xyz.y / whiteReference.y));
+    float b = 200.0 * (XYZToCIELABAuxiliaryFunction(xyz.y / whiteReference.y) - XYZToCIELABAuxiliaryFunction(xyz.z / whiteReference.z));
+    
+    return vec3(l, a, b);
+}
+vec3 CIELABToMSH(vec3 cielab)
+{
+    float m = length(cielab);
+    float s = acos(cielab.x / m);
+    float h = atan(cielab.z / cielab.y);
+    
+    return vec3(m, s, h); 
+}
+vec3 RGBToMSH(vec3 rgb)
+{
+    vec3 xyz = RGBToXYZ(rgb);
+    vec3 cielab = XYZToCIELAB(xyz);
+    return CIELABToMSH(cielab);
+}
+
+vec3 XYZToRGB(vec3 xyz)
+{  
+    vec3 xyzn = xyz / 100.0;
+
+    mat3 XYZToRGBMatrix = mat3(
+        vec3(3.2406, -1.5372, -0.4986), // First column
+        vec3(-0.9689, 1.8758, 0.0415), // Second column
+        vec3(0.0557, -0.2040, 1.0570) // Third column
+        );
+        
+    vec3 rgb = xyzn * XYZToRGBMatrix;
+    
+    float l = 0.0031308;
+    rgb.r = rgb.r > l ? 1.055 * pow(rgb.r, 1.0 / 2.4) - 0.055 : 12.92 * rgb.r;
+    rgb.g = rgb.g > l ? 1.055 * pow(rgb.g, 1.0 / 2.4) - 0.055 : 12.92 * rgb.g;
+    rgb.b = rgb.b > l ? 1.055 * pow(rgb.b, 1.0 / 2.4) - 0.055 : 12.92 * rgb.b; 
+    
+    return rgb * 255.0; 
+}
+float CIELABToXYZAuxiliaryFunction(float x)
+{
+    float epsilon = 6.0 / 29.0;
+    if(x > epsilon)
+        return x*x*x;
+    else
+        return 3.0*epsilon*epsilon * (x - 4.0 / 29.0); 
+}
+vec3 CIELABToXYZ(vec3 cielab)
+{
+    float l = cielab.x;
+    float a = cielab.y;
+    float b = cielab.z;
+    
+    vec3 whiteReference = vec3(95.047, 100.000, 108.883);
+    
+    float x = whiteReference.x * CIELABToXYZAuxiliaryFunction( (l + 16.0) / 116.0 + a / 500.0);
+    float y = whiteReference.y * CIELABToXYZAuxiliaryFunction( (l + 16.0) / 116.0);
+    float z = whiteReference.z * CIELABToXYZAuxiliaryFunction( (l + 16.0) / 116.0 - b / 200.0);
+    
+    return vec3(x, y, z);
+}
+vec3 MSHToCIELAB(vec3 msh)
+{
+    float m = msh.x;
+    float s = msh.y;
+    float h = msh.z;
+
+    float l = m * cos(s);
+    float a = m * sin(s) * cos(h);
+    float b = m * sin(s) * sin(h);
+    return vec3(l, a, b);
+}
+vec3 MSHToRGB(vec3 msh)
+{
+    vec3 cielab = MSHToCIELAB(msh);
+    vec3 xyz = CIELABToXYZ(cielab);
+    return XYZToRGB(xyz);
+}
+
+float AdjustHue(vec3 msh, float mUnsaturated)
+{
+    if(msh.x >= mUnsaturated)
+        return msh.z;
+        
+    float hSpin = msh.y * sqrt(mUnsaturated * mUnsaturated - msh.x * msh.x) / (msh.x * sin(msh.y));
+    if(msh.z > -1.047197551196598); // -pi / 3
+        return msh.z + hSpin;
+        
+    return msh.z - hSpin; 
+}
+vec3 InterpolateColor(vec3 rgb1, vec3 rgb2, float interpolationValue, vec3 rgbNone, float epsilon)
+{
+    // Assign a different color for near-zero values:
+    if(interpolationValue < epsilon)
+    {
+        interpolationValue = interpolationValue / epsilon;
+        return (1.0 - interpolationValue) * rgbNone + interpolationValue * rgb1;
+    }
+        
+    vec3 msh1 = RGBToMSH(rgb1);
+    vec3 msh2 = RGBToMSH(rgb2);
+    
+    // If the points saturated and distinct, place white in the middle:
+    if(msh1.y > 0.05 && msh2.y > 0.05 && abs(msh2.z - msh1.z) > 1.047197551196598)
+    {
+        float mMid = max(max(msh1.x, msh2.x), 88.0);
+        
+        if(interpolationValue < 0.5)
+        {
+            msh2 = vec3(mMid, 0.0, 0.0);
+            interpolationValue = 2.0 * interpolationValue; 
+        }
+        else
+        {
+            msh1 = vec3(mMid, 0.0, 0.0);
+            interpolationValue = 2.0 * interpolationValue - 1.0;
+        }
+    }
+    
+    // Adjust hue of unsaturated colors:
+    if(msh1.y < 0.05 && msh2.y > 0.05)
+        msh1.z = AdjustHue(msh2, msh1.x);
+    else if(msh2.y < 0.05 && msh1.y > 0.05)
+        msh2.z = AdjustHue(msh1, msh2.x);
+        
+    // Linear interpolation on adjusted control points:
+    vec3 finalMsh = (1.0 - interpolationValue) * msh1 + interpolationValue * msh2;
+    
+    return MSHToRGB(finalMsh);
+}
+
+/// <sumary>
+/// Implementing a continuous diverging color map, according to 
+/// [Moreland, Kenneth. "Diverging color maps for scientific visualization." 
+/// International Symposium on Visual Computing. Springer Berlin Heidelberg, 2009.],
+/// Section 4.
+/// </sumary>
 void main() 
 {
     float kdeValue = texture2D(u_texture, vs_uv).r;
     kdeValue /= u_maxValue;
-
-    gl_FragColor = vec4(kdeValue, kdeValue, kdeValue, 1.0);
+    
+    vec3 rgb1 = vec3(0.0, 0.0, 255.0);
+    vec3 rgb2 = vec3(255.0, 0.0, 0.0);
+    vec3 rgb3 = vec3(0.0, 0.0, 0.0);
+    float epsilon = 0.05;
+    vec3 color = InterpolateColor(rgb1, rgb2, kdeValue, rgb3, epsilon) / 255.0;
+    
+    gl_FragColor = vec4(color, 1.0);
 }
 </script>
 
